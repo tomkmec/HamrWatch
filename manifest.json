@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+
+  "name": "HAMRWatch",
+  "description": "HAMR watcher",
+  "version": "0.1.0",
+
+  "permissions": [
+    "http://hodiny.hamrsport.cz/"
+  ],
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html",
+    "default_title": "HAMR watch"
+  },
+  "background": {
+    "scripts": ["jq.js","background.js"]
+  }
+}
