@@ -1,6 +1,6 @@
-var debug = false;
+var debug = true;
 
-var period = 10 *60*1000;
+var period = 5 *60*1000;
 var watching = ['Braník','Badminton'];
 var watched = [
 	{
@@ -8,19 +8,21 @@ var watched = [
 		cells: [[20,21], [21,22], [22,23]]
 	}
 ]
+var currentTimeout=false;
+var alreadyReported = [];
 
 window.message='(inicializace)';
 
 watch()
 
 function watch() {
-
 	read()
 
 	if (debug) {
 		console.log('period: ' + localStorage["period"]);
 	}
-	setTimeout(watch, period)
+	if (currentTimeout) clearTimeout(currentTimeout)
+	currentTimeout = setTimeout(watch, period)
 }
 
 function read() {
@@ -62,7 +64,7 @@ function parse(data) {
 				})
 		})
 
-		report(matches.length, matches.join('<br>'));
+		report(matches.length, matches.join('<br>'), matches);
 	}
 
 }
@@ -81,7 +83,27 @@ function startsWith(text, arr) {
 	return false;
 }
 
-function report(result, message) {
+function report(result, message, matches) {
 	chrome.browserAction.setBadgeText({text: (result===false? "!" : ''+result)})
 	window.message = message;
+
+	if (result!==false) {
+		console.log(matches)
+		notify = [];
+		matches.forEach(function(r) {
+			if (alreadyReported.indexOf(r)==-1) {
+				notify.push(r);
+				alreadyReported.push(r);
+			}
+		})
+		console.log(notify)
+		if (notify.length>0) {
+			var notification = webkitNotifications.createNotification(
+			  'icon.png',  // icon url - can be relative
+			  'Volné termíny',  // notification title
+			  'šup!'  // notification body text
+			);
+			notification.show();
+		}
+	}
 }

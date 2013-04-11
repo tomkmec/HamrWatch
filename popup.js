@@ -1,3 +1,5 @@
 var msg = chrome.extension.getBackgroundPage().message;
 document.getElementById('msg').innerHTML = (msg!='')? msg : 'nic';
-console.log(msg)
+document.getElementById('reload').onclick= function(){
+	chrome.extension.getBackgroundPage().watch()
+}
